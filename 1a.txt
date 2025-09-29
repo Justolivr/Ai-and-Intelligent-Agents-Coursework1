@@ -1,0 +1,14 @@
+1a) Sudoku defined as a constraint satisfaction problem
+
+Variables:
+Finding the correct integer for a 9x9 grid of cells in Sudoku
+This can be divided into a 3x3 grid of 3x3 "subgrids"
+
+Domains:
+A cell may be occupied by an integer ranging from 1-9
+
+Constraints:
+Each row of the 9x9 grid must use numbers 1-9 exactly once
+Each column of the 9x9 must use numbers 1-9 exactly once
+In the "subgrid" 3x3 grids, each number from 1-9 must be used exactly once
+A cell can only have exactly one value
