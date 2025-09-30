@@ -51,9 +51,19 @@ def printBoard():
 
 # set up a 2d array
 # or a list of lists in this case
+# read data and print the initial puzzle
 
 row, column = (9, 9)
 board = [[0 for i in range(column)] for i in range(row)]
 
 readFile(board)
+printBoard()
+
+# TODO
+# implement the actual solving part
+
+print("\n   V   Solution   V    \n")
+
+
+# print the completed puzzle here
 printBoard()
