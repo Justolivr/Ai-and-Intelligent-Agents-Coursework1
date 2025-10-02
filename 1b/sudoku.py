@@ -54,11 +54,9 @@ def printBoard():
 # read data and print the initial puzzle
 
 row, column = (9, 9)
-board = [[0 for i in range(column)] for i in range(row)]
+board = [[0 for i in range(column)] for j in range(row)]
 
 readFile(board)
-printBoard()
-
 # TODO
 
 def validity(board, row, column, num):
@@ -85,7 +83,7 @@ def validity(board, row, column, num):
     return True
 # implement the actual solving part
 
-def findNextEmptySpace():
+def findNextEmptySpace(board):
     # loops through the rows and columns
     for i in range(9):
         for j in range(9):
@@ -115,13 +113,26 @@ def solveSudoku(board):
         return True
     else:
         row, column = findNextEmptySpace(board)
-    # So we need to go through every row first,
+    # So we need to go through every row first
+    for num in range(1,9):
+        if validity(board, row, column, num):
+            board[row][column] = num
+
+    if(solveSudoku(board)):
+        return True
+    
+    board[row][column] = 0
     return True
     
 
 print("\n   V   Solution   V    \n")
 
+printBoard()
+
+if(solveSudoku(board)):
+    printBoard()
+else:
+    print("Not true")
 
 # print the completed puzzle here
-printBoard()
-print(findNextEmptySpace())
+print(findNextEmptySpace(board))
