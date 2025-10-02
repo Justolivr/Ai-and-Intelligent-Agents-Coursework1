@@ -60,8 +60,33 @@ readFile(board)
 printBoard()
 
 # TODO
+
+def validity(board, row, col, num):
+    # check row 
+    for i in range[9]:
+        if board[row][i] == num:
+            return False
+    
+    # check column
+    for j in range[9]:
+        if board[j][column] == num:
+            return False
+    # checks the top-left cell of 3x3 is valid, and check the area around it
+    startRow = (row // 3) * 3
+    startCol = (col // 3) * 3
+
+    # 
+    for i in range(startRow, startRow + 3):
+        for j in range(startCol, startCol + 3):
+            if board[i][j] == num:
+                return False
+
+    # return true if all constraints are checked
+    return True
 # implement the actual solving part
 
+def findNextEmptySpace:
+    return False
 print("\n   V   Solution   V    \n")
 
 
