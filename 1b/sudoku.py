@@ -57,12 +57,12 @@ def printBoard():
 # TODO
 
 def validity(board, row, column, num):
-    # check row 
+    # check row contains a number AND i does not equal to the value of the column (stop repeated values) 
     for i in range(9):
         if board[row][i] == num and i != column:
             return False
     
-    # check column
+    # check column contains a number and j does not equal the value of the row (to stop repeated values)
     for j in range(9):
         if board[j][column] == num and j != row:
             return False
@@ -84,7 +84,7 @@ def findNextEmptySpace(board):
     # loops through the rows and columns
     for i in range(9):
         for j in range(9):
-            # if [i][j] is equal to String, then return 2d coord
+            # if [i][j] is equal to 0, then return the position that 0 was in
             if (board[i][j] == 0):
                 return (i,j)
 
@@ -101,19 +101,21 @@ def findNextEmptySpace(board):
 
 def solveSudoku(board):
 
-    # if we cannot find an empty space, then the puzzle has been solved.
+    # if we cannot find an empty space (e.g. a value with 0), then the puzzle has been solved.
     if not (findNextEmptySpace(board)):
         return True
     else:
+        # move onto the next value to check 
         row, column = findNextEmptySpace(board)
-    # So we need to go through every row first
+    # Check every number from 1 to 9
     for num in range(1,10):
+        # if we pass the validity check, then we change the value of the coordinate to the correct number
         if validity(board, row, column, num):
             board[row][column] = num
-
+    # recursively call the function until it returns True
     if(solveSudoku(board)):
         return True
-    
+    # else, we backtrack the number to 0
     board[row][column] = 0
     return False
     
