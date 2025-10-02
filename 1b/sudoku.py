@@ -63,12 +63,12 @@ printBoard()
 
 def validity(board, row, col, num):
     # check row 
-    for i in range[9]:
+    for i in range(9):
         if board[row][i] == num:
             return False
     
     # check column
-    for j in range[9]:
+    for j in range(9):
         if board[j][column] == num:
             return False
     # checks the top-left cell of 3x3 is valid, and check the area around it
@@ -86,8 +86,22 @@ def validity(board, row, col, num):
 # implement the actual solving part
 
 def findNextEmptySpace():
+
+    for i in range(9):
+        for j in range(9):
+            print(board[i][j])
+            if (board[i][j] == 0):
+                print(i)
+                print(j)
+                return (i,j)
+
+
+    # PSEUDO
+    # Check the rows and the columns
+    # if the next square contains a 0 or an empty space, then return the id of the cell (2d array?)
+
     # finds the next 0 inside the sudoku board
-    return False
+    return None
 
 # function def was borked and it was throwing an error and it was upsetting me
 # up to you whether you want to do it or not
@@ -98,3 +112,4 @@ print("\n   V   Solution   V    \n")
 
 # print the completed puzzle here
 printBoard()
+print(findNextEmptySpace())
