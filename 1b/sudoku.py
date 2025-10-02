@@ -18,7 +18,7 @@ def readFile(board):
         reader = csv.reader(file)
         for line in reader:
             for value in line:
-                board[i][j] = value
+                board[i][j] = int(value)
                 j = j + 1
                 if j == 9:
                     j = 0
@@ -53,13 +53,31 @@ def printBoard():
 # or a list of lists in this case
 # read data and print the initial puzzle
 
-row, column = (9, 9)
-board = [[0 for i in range(column)] for i in range(row)]
-
-readFile(board)
-printBoard()
 
 # TODO
+
+def validity(board, row, column, num):
+    # check row contains a number AND i does not equal to the value of the column (stop repeated values) 
+    for i in range(9):
+        if board[row][i] == num and i != column:
+            return False
+    
+    # check column contains a number and j does not equal the value of the row (to stop repeated values)
+    for j in range(9):
+        if board[j][column] == num and j != row:
+            return False
+    # checks the top-left cell of 3x3 is valid, and check the area around it
+    startRow = (row // 3) * 3
+    startCol = (column // 3) * 3
+
+    # 
+    for i in range(startRow, startRow + 3):
+        for j in range(startCol, startCol + 3):
+            if board[i][j] == num and (i,j) != (row,column):
+                return False
+
+    # return true if all constraints are checked
+    return True
 # implement the actual solving part
 # check the validity of the sudoku
 def validity(board, row, col, num):
@@ -87,8 +105,56 @@ def validity(board, row, col, num):
 
     
 
+def findNextEmptySpace(board):
+    # loops through the rows and columns
+    for i in range(9):
+        for j in range(9):
+            # if [i][j] is equal to 0, then return the position that 0 was in
+            if (board[i][j] == 0):
+                return (i,j)
+
+
+    # PSEUDO
+    # Check the rows and the columns
+    # if the next square contains a 0 or an empty space, then return the id of the cell (2d array?)
+
+    # finds the next 0 inside the sudoku board
+    return None
+
+# function def was borked and it was throwing an error and it was upsetting me
+# up to you whether you want to do it or not
+
+def solveSudoku(board):
+
+    # if we cannot find an empty space (e.g. a value with 0), then the puzzle has been solved.
+    if not (findNextEmptySpace(board)):
+        return True
+    else:
+        # move onto the next value to check 
+        row, column = findNextEmptySpace(board)
+    # Check every number from 1 to 9
+    for num in range(1,10):
+        # if we pass the validity check, then we change the value of the coordinate to the correct number
+        if validity(board, row, column, num):
+            board[row][column] = num
+    # recursively call the function until it returns True
+    if(solveSudoku(board)):
+        return True
+    # else, we backtrack the number to 0
+    board[row][column] = 0
+    return False
+    
+row, column = (9, 9)
+board = [[0 for i in range(column)] for j in range(row)]
+
+readFile(board)
 print("\n   V   Solution   V    \n")
 
 
+if(solveSudoku(board)):
+    printBoard()
+else:
+    print("Not true")
+
 # print the completed puzzle here
-printBoard()
+print(findNextEmptySpace(board))
