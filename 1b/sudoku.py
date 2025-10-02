@@ -86,11 +86,13 @@ def validity(board, row, col, num):
 # implement the actual solving part
 
 def findNextEmptySpace():
-
+    # loops through the rows and columns
     for i in range(9):
         for j in range(9):
+            # DEBUG print to check num position
             print(board[i][j])
-            if (board[i][j] == 0):
+            # if [i][j] is equal to String, then return 2d coord
+            if (board[i][j] == '0'):
                 print(i)
                 print(j)
                 return (i,j)
