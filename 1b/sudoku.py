@@ -61,7 +61,7 @@ printBoard()
 
 # TODO
 
-def validity(board, row, col, num):
+def validity(board, row, column, num):
     # check row 
     for i in range(9):
         if board[row][i] == num:
@@ -73,7 +73,7 @@ def validity(board, row, col, num):
             return False
     # checks the top-left cell of 3x3 is valid, and check the area around it
     startRow = (row // 3) * 3
-    startCol = (col // 3) * 3
+    startCol = (column // 3) * 3
 
     # 
     for i in range(startRow, startRow + 3):
@@ -108,6 +108,16 @@ def findNextEmptySpace():
 # function def was borked and it was throwing an error and it was upsetting me
 # up to you whether you want to do it or not
 
+def solveSudoku(board):
+
+    # if we cannot find an empty space, then the puzzle has been solved.
+    if not (findNextEmptySpace(board)):
+        return True
+    else:
+        row, column = findNextEmptySpace(board)
+    # So we need to go through every row first,
+    return True
+    
 
 print("\n   V   Solution   V    \n")
 
