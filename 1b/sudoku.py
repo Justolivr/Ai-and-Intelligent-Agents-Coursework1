@@ -18,7 +18,7 @@ def readFile(board):
         reader = csv.reader(file)
         for line in reader:
             for value in line:
-                board[i][j] = value
+                board[i][j] = int(value)
                 j = j + 1
                 if j == 9:
                     j = 0
@@ -53,21 +53,18 @@ def printBoard():
 # or a list of lists in this case
 # read data and print the initial puzzle
 
-row, column = (9, 9)
-board = [[0 for i in range(column)] for j in range(row)]
 
-readFile(board)
 # TODO
 
 def validity(board, row, column, num):
     # check row 
     for i in range(9):
-        if board[row][i] == num:
+        if board[row][i] == num and i != column:
             return False
     
     # check column
     for j in range(9):
-        if board[j][column] == num:
+        if board[j][column] == num and j != row:
             return False
     # checks the top-left cell of 3x3 is valid, and check the area around it
     startRow = (row // 3) * 3
@@ -76,7 +73,7 @@ def validity(board, row, column, num):
     # 
     for i in range(startRow, startRow + 3):
         for j in range(startCol, startCol + 3):
-            if board[i][j] == num:
+            if board[i][j] == num and (i,j) != (row,column):
                 return False
 
     # return true if all constraints are checked
@@ -87,12 +84,8 @@ def findNextEmptySpace(board):
     # loops through the rows and columns
     for i in range(9):
         for j in range(9):
-            # DEBUG print to check num position
-            print(board[i][j])
             # if [i][j] is equal to String, then return 2d coord
-            if (board[i][j] == '0'):
-                print(i)
-                print(j)
+            if (board[i][j] == 0):
                 return (i,j)
 
 
@@ -114,7 +107,7 @@ def solveSudoku(board):
     else:
         row, column = findNextEmptySpace(board)
     # So we need to go through every row first
-    for num in range(1,9):
+    for num in range(1,10):
         if validity(board, row, column, num):
             board[row][column] = num
 
@@ -122,12 +115,14 @@ def solveSudoku(board):
         return True
     
     board[row][column] = 0
-    return True
+    return False
     
+row, column = (9, 9)
+board = [[0 for i in range(column)] for j in range(row)]
 
+readFile(board)
 print("\n   V   Solution   V    \n")
 
-printBoard()
 
 if(solveSudoku(board)):
     printBoard()
