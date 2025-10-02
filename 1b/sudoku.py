@@ -85,8 +85,14 @@ def validity(board, row, col, num):
     return True
 # implement the actual solving part
 
-def findNextEmptySpace:
+def findNextEmptySpace():
+    # finds the next 0 inside the sudoku board
     return False
+
+# function def was borked and it was throwing an error and it was upsetting me
+# up to you whether you want to do it or not
+
+
 print("\n   V   Solution   V    \n")
 
 
