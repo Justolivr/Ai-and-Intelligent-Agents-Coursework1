@@ -18,7 +18,7 @@ def readFile(board):
 
     i = 0
     j = 0
-    with open("1b/easypuzzlepls.csv", newline='') as file:
+    with open("impossiblepuzzle.csv", newline='') as file:
         reader = csv.reader(file)
         for line in reader:
             for value in line:
@@ -101,40 +101,31 @@ def findNextEmptySpace(board):
             # if [i][j] is equal to 0, then return the position that 0 was in
             if (board[i][j] == 0):
                 return (i, j)
-
-    # PSEUDO
-    # Check the rows and the columns
-    # if the next square contains a 0 or an empty space, then return the id of the cell (2d array?)
-
-    # finds the next 0 inside the sudoku board
     return None
 
-# function def was borked and it was throwing an error and it was upsetting me
-# up to you whether you want to do it or not
-
-
 def solveSudoku(board):
+    # we have defined the varialble find to be the next empty space in the board. This is to stop us calling the function twice.
+    find = findNextEmptySpace(board) 
+    if not find:
+        return True  # if we cannot find an empty space, then the puzzle has been solved.
 
-    # if we cannot find an empty space (e.g. a value with 0), then the puzzle has been solved.
-    if not (findNextEmptySpace(board)):
-        return True
-    else:
-        # move onto the next value to check
-        row, column = findNextEmptySpace(board)
-    # Check every number from 1 to 9
+    row, column = find # move onto the next value to check
+
     for num in range(1, 10):
-        # if we pass the validity check, then we change the value of the coordinate to the correct number
-        if validity(board, row, column, num):
+        if validity(board, row, column, num): # if we pass the validity check, then we change the value of the coordinate to the correct number
             board[row][column] = num
-    # recursively call the function until it returns True
-    if (solveSudoku(board)):
-        return True
-    # else, we backtrack the number to 0
-    board[row][column] = 0
+
+            if solveSudoku(board): # recursively call the function until we return true
+                return True
+
+            # backtrack the number to 0
+            board[row][column] = 0
+
     return False
 
 
-sys.setrecursionlimit(2147483647)
+
+sys.setrecursionlimit(1000)
 
 row, column = (9, 9)
 board = [[0 for i in range(column)] for j in range(row)]
@@ -149,19 +140,19 @@ print("Validating board...")
 
 if not validateInitialBoard(board):
 
-    print("Puzzle validated in: %s seconds" % (time.time() - start))
+    print("Puzzle validated in: %.6f seconds" % (time.time() - start))
     print("This puzzle is invalid and cannot be solved.\n")
 else:
     print("\n")
-    print("Puzzle validated in: %s seconds" % (time.time() - start))
+    print("Puzzle validated in: %.6f seconds" % (time.time() - start))
     print("Solve started at %s \n" % datetime.now().time())
 
     start = time.time()
 
     if solveSudoku(board):
         printBoard()
-        print("\nSolution found in: %s seconds" % (time.time() - start))
+        print("\nSolution found in: %.6f seconds" % (time.time() - start))
         print("Solution completed at %s" % datetime.now().time())
     else:
         print("No solution exists.")
-        print("Elapsed time: %s"  % (time.time() - start))
+        print("Elapsed time: %.6f"  % (time.time() - start))
