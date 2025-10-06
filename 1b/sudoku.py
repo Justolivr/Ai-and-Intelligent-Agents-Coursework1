@@ -1,4 +1,8 @@
 import csv
+import time
+import sys
+from datetime import datetime
+
 
 def readFile(board):
 
@@ -14,7 +18,7 @@ def readFile(board):
 
     i = 0
     j = 0
-    with open("testpuzzle.csv", newline='') as file:
+    with open("1b/easypuzzlepls.csv", newline='') as file:
         reader = csv.reader(file)
         for line in reader:
             for value in line:
@@ -64,12 +68,13 @@ def validateInitialBoard(board):
                     return False
     return True
 
+
 def validity(board, row, column, num):
-    # check row contains a number AND i does not equal to the value of the column (stop repeated values) 
+    # check row contains a number AND i does not equal to the value of the column (stop repeated values)
     for i in range(9):
         if board[row][i] == num and i != column:
             return False
-    
+
     # check column contains a number and j does not equal the value of the row (to stop repeated values)
     for j in range(9):
         if board[j][column] == num and j != row:
@@ -78,17 +83,16 @@ def validity(board, row, column, num):
     startRow = (row // 3) * 3
     startCol = (column // 3) * 3
 
-    # 
+    #
     for i in range(startRow, startRow + 3):
         for j in range(startCol, startCol + 3):
-            if board[i][j] == num and (i,j) != (row,column):
+            if board[i][j] == num and (i, j) != (row, column):
                 return False
 
     # return true if all constraints are checked
     return True
 # implement the actual solving part
 
-    
 
 def findNextEmptySpace(board):
     # loops through the rows and columns
@@ -96,8 +100,7 @@ def findNextEmptySpace(board):
         for j in range(9):
             # if [i][j] is equal to 0, then return the position that 0 was in
             if (board[i][j] == 0):
-                return (i,j)
-
+                return (i, j)
 
     # PSEUDO
     # Check the rows and the columns
@@ -109,38 +112,56 @@ def findNextEmptySpace(board):
 # function def was borked and it was throwing an error and it was upsetting me
 # up to you whether you want to do it or not
 
+
 def solveSudoku(board):
 
     # if we cannot find an empty space (e.g. a value with 0), then the puzzle has been solved.
     if not (findNextEmptySpace(board)):
         return True
     else:
-        # move onto the next value to check 
+        # move onto the next value to check
         row, column = findNextEmptySpace(board)
     # Check every number from 1 to 9
-    for num in range(1,10):
+    for num in range(1, 10):
         # if we pass the validity check, then we change the value of the coordinate to the correct number
         if validity(board, row, column, num):
             board[row][column] = num
     # recursively call the function until it returns True
-    if(solveSudoku(board)):
+    if (solveSudoku(board)):
         return True
     # else, we backtrack the number to 0
     board[row][column] = 0
     return False
-    
+
+
+sys.setrecursionlimit(2147483647)
+
 row, column = (9, 9)
 board = [[0 for i in range(column)] for j in range(row)]
 
 readFile(board)
-print("\n   V   Initial Puzzle   V    \n")
+start = time.time()
+
+print("\nInput puzzle\n")
 printBoard()
+print("\n")
+print("Validating board...")
 
 if not validateInitialBoard(board):
-    print("This puzzle is invalid and cannot be solved.")
+
+    print("Puzzle validated in: %s seconds" % (time.time() - start))
+    print("This puzzle is invalid and cannot be solved.\n")
 else:
-    print("\n   V   Solution   V    \n")
+    print("\n")
+    print("Puzzle validated in: %s seconds" % (time.time() - start))
+    print("Solve started at %s \n" % datetime.now().time())
+
+    start = time.time()
+
     if solveSudoku(board):
         printBoard()
+        print("\nSolution found in: %s seconds" % (time.time() - start))
+        print("Solution completed at %s" % datetime.now().time())
     else:
         print("No solution exists.")
+        print("Elapsed time: %s"  % (time.time() - start))
