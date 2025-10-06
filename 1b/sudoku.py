@@ -14,7 +14,7 @@ def readFile(board):
 
     i = 0
     j = 0
-    with open("1b/testpuzzle.csv", newline='') as file:
+    with open("testpuzzle.csv", newline='') as file:
         reader = csv.reader(file)
         for line in reader:
             for value in line:
@@ -55,6 +55,14 @@ def printBoard():
 
 
 # TODO
+def validateInitialBoard(board):
+    for i in range(9):
+        for j in range(9):
+            val = board[i][j]
+            if val != 0:
+                if not validity(board, i, j, val):
+                    return False
+    return True
 
 def validity(board, row, column, num):
     # check row contains a number AND i does not equal to the value of the column (stop repeated values) 
@@ -79,6 +87,8 @@ def validity(board, row, column, num):
     # return true if all constraints are checked
     return True
 # implement the actual solving part
+
+    
 
 def findNextEmptySpace(board):
     # loops through the rows and columns
@@ -123,13 +133,14 @@ row, column = (9, 9)
 board = [[0 for i in range(column)] for j in range(row)]
 
 readFile(board)
-print("\n   V   Solution   V    \n")
+print("\n   V   Initial Puzzle   V    \n")
+printBoard()
 
-
-if(solveSudoku(board)):
-    printBoard()
+if not validateInitialBoard(board):
+    print("This puzzle is invalid and cannot be solved.")
 else:
-    print("Not true")
-
-# print the completed puzzle here
-print(findNextEmptySpace(board))
+    print("\n   V   Solution   V    \n")
+    if solveSudoku(board):
+        printBoard()
+    else:
+        print("No solution exists.")
