@@ -166,5 +166,13 @@ class SudokuApp:
         
         self.board = [[0 for _ in range(9)] for _ in range(9)]
         self.cells = [[None for _ in range(9)] for _ in range(9)]
-        
+        self.create_grid()
+        self.create_controls()
+    
+    def create_grid(self):
+        for i in range(9):
+            for j in range(9):
+                entry = tk.Entry(self.root, width=3, font=('Arial', 28), justify='center')
+                entry.grid(row=i, column=j, padx=(0 if j % 3 else 4), pady=1)
+                self.cells[i][j] = entry
         
