@@ -8,7 +8,7 @@ from datetime import datetime
 backTrackCount = 0 # global variable to count the number of backtracks
 
 # takes in board and filename, so that we can read from different files if needed
-def readFile(board, filename):
+def read_file(board, filename):
 
     # open csv file to read
     # populate each value of the csv into the correct position
@@ -34,7 +34,7 @@ def readFile(board, filename):
                         return
 
 
-def printBoard():
+def print_board():
 
     # prints the current state of the board in terminal
     # traverse through the entire state of the board
@@ -56,17 +56,17 @@ def printBoard():
             print("")
 
 # validates the initial board so we dont waste time trying to solve an invalid puzzle
-def validateInitialBoard(board):
+def validate_init_board(board):
     for i in range(9):
         for j in range(9):
             val = board[i][j]
             if val != 0:
-                if not validity(board, i, j, val):
+                if not check_valid(board, i, j, val):
                     return False
     return True
 
 
-def validity(board, row, column, num):
+def check_valid(board, row, column, num):
     # check row contains a number AND i does not equal to the value of the column (stop repeated values)
     for i in range(9):
         if board[row][i] == num and i != column:
@@ -77,12 +77,12 @@ def validity(board, row, column, num):
     # check column contains a number and j does not equal the value of the row (to stop repeated values)
     
     # checks the top-left cell of 3x3 is valid, and check the area around it
-    startRow = (row // 3) * 3
-    startCol = (column // 3) * 3
+    start_row = (row // 3) * 3
+    start_col = (column // 3) * 3
 
     #
-    for i in range(startRow, startRow + 3):
-        for j in range(startCol, startCol + 3):
+    for i in range(start_row, start_row + 3):
+        for j in range(start_col, start_col + 3):
             if board[i][j] == num and (i, j) != (row, column):
                 return False
 
@@ -91,7 +91,7 @@ def validity(board, row, column, num):
 # implement the actual solving part
 
 
-def findNextEmptySpace(board):
+def find_next_empty_space(board):
     # loops through the rows and columns
     for i in range(9):
         for j in range(9):
@@ -100,21 +100,21 @@ def findNextEmptySpace(board):
                 return (i, j)
     return None
 
-def solveSudoku(board):
+def solve_sudoku(board):
     # calling backTrackCount as a global variable so we can increment it
     global backTrackCount
     # we have defined the varialble find to be the next empty space in the board. This is to stop us calling the function twice.
-    find = findNextEmptySpace(board) 
+    find = find_next_empty_space(board) 
     if not find:
         return True  # if we cannot find an empty space, then the puzzle has been solved.
 
     row, column = find # move onto the next value to check
 
     for num in range(1, 10):
-        if validity(board, row, column, num): # if we pass the validity check, then we change the value of the coordinate to the correct number
+        if check_valid(board, row, column, num): # if we pass the check_valid check, then we change the value of the coordinate to the correct number
             board[row][column] = num
 
-            if solveSudoku(board): # recursively call the function until we return true
+            if solve_sudoku(board): # recursively call the function until we return true
                 return True
 
             # backtrack the number to 0
@@ -131,15 +131,15 @@ sys.setrecursionlimit(1000)
 row, column = (9, 9)
 board = [[0 for i in range(column)] for j in range(row)]
 
-readFile(board)
+read_file(board)
 start = time.time()
 
 print("\nInput puzzle\n")
-printBoard()
+print_board()
 print("\n")
 print("Validating board...")
 
-if not validateInitialBoard(board):
+if not validate_init_board(board):
 
     print("Puzzle validated in: %.6f seconds" % (time.time() - start))
     print("This puzzle is invalid and cannot be solved.\n")
@@ -150,8 +150,8 @@ else:
 
     start = time.time()
 
-    if solveSudoku(board):
-        printBoard()
+    if solve_sudoku(board):
+        print_board()
         print("\nSolution found in: %.6f seconds" % (time.time() - start))
         print("Solution completed at %s" % datetime.now().time())
     else:
@@ -175,4 +175,9 @@ class SudokuApp:
                 entry = tk.Entry(self.root, width=3, font=('Arial', 28), justify='center')
                 entry.grid(row=i, column=j, padx=(0 if j % 3 else 4), pady=1)
                 self.cells[i][j] = entry
-        
+    
+    def create_controls(self):
+        frame = tk.Frame(self.root)
+        frame.grid(row=10, column=0, columnspan=9, pady=10)
+
+        load
