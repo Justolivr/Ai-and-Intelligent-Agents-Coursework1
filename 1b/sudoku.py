@@ -1,10 +1,14 @@
 import csv
 import time
 import sys
+import tkinter as tk
+from tkinter import messagebox, filedialog # for file dialog and message boxes.
 from datetime import datetime
 
+backTrackCount = 0 # global variable to count the number of backtracks
 
-def readFile(board):
+# takes in board and filename, so that we can read from different files if needed
+def readFile(board, filename):
 
     # open csv file to read
     # populate each value of the csv into the correct position
@@ -16,9 +20,8 @@ def readFile(board):
     # go to the next column
     # stop reading when 9 rows are read
 
-    i = 0
-    j = 0
-    with open("impossiblepuzzle.csv", newline='') as file:
+    i = j = 0
+    with open(filename, newline='') as file:
         reader = csv.reader(file)
         for line in reader:
             for value in line:
@@ -52,13 +55,7 @@ def printBoard():
         else:
             print("")
 
-
-# set up a 2d array
-# or a list of lists in this case
-# read data and print the initial puzzle
-
-
-# TODO
+# validates the initial board so we dont waste time trying to solve an invalid puzzle
 def validateInitialBoard(board):
     for i in range(9):
         for j in range(9):
@@ -74,11 +71,11 @@ def validity(board, row, column, num):
     for i in range(9):
         if board[row][i] == num and i != column:
             return False
+        if board[i][column] == num and i != row:
+            return False
 
     # check column contains a number and j does not equal the value of the row (to stop repeated values)
-    for j in range(9):
-        if board[j][column] == num and j != row:
-            return False
+    
     # checks the top-left cell of 3x3 is valid, and check the area around it
     startRow = (row // 3) * 3
     startCol = (column // 3) * 3
@@ -104,6 +101,8 @@ def findNextEmptySpace(board):
     return None
 
 def solveSudoku(board):
+    # calling backTrackCount as a global variable so we can increment it
+    global backTrackCount
     # we have defined the varialble find to be the next empty space in the board. This is to stop us calling the function twice.
     find = findNextEmptySpace(board) 
     if not find:
@@ -120,6 +119,8 @@ def solveSudoku(board):
 
             # backtrack the number to 0
             board[row][column] = 0
+            # increment the backtrack counter
+            backTrackCount += 1
 
     return False
 
@@ -156,3 +157,14 @@ else:
     else:
         print("No solution exists.")
         print("Elapsed time: %.6f"  % (time.time() - start))
+
+
+class SudokuApp:
+    def __init__(self, root):
+        self.root = root
+        self.root.title("Sudoku Solver")
+        
+        self.board = [[0 for _ in range(9)] for _ in range(9)]
+        self.cells = [[None for _ in range(9)] for _ in range(9)]
+        
+        
