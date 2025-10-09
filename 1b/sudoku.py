@@ -191,3 +191,29 @@ class SudokuApp:
 
         self.backtrack_label = tk.Label(frame, text="Backtracks: 0")
         self.backtrack_label.grid(row=0, column=3, padx=10)
+
+    def load_puzzle(self):
+        file_path = filedialog.askopenfilename(title="Select CSV File", filetypes=[("CSV files", "*.csv")])
+        if not file_path:
+            return
+        try:
+            data = []
+            with open(file_path, newline='') as file:
+                reader = csv.reader(file)
+                for row in reader:
+                    data.append(int(val))
+                if len(data) != 81:
+                    raise ValueError("CSV must contain exactly 81 values.")
+                
+                idx = 0
+                for i in range(9):
+                    for j in range(9):
+                        val = data[idx]
+                        idx += 1
+                        self.cells[i][j].delete(0, tk.END)
+                        if val != 0:
+                            self.cells[i][i].insert(0, str(val))
+                            messagebox.showinfo("Info", "Puzzle loaded successfully.")
+        except Exception as e:
+            messagebox.showerror("Error", f"Failed to read file: {e}")
+            return
