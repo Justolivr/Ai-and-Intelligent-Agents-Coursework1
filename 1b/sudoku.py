@@ -180,4 +180,14 @@ class SudokuApp:
         frame = tk.Frame(self.root)
         frame.grid(row=10, column=0, columnspan=9, pady=10)
 
-        load
+        load_btn = tk.Button(frame, text="Load CSV Puzzle", command=self.load_puzzle)
+        load_btn.grid(row=0, column=0, padx=10)
+
+        solve_btn = tk.Button(frame, text="Solve Puzzle", command=self.solve_puzzle)
+        solve_btn.grid(row=0, column=1, padx=10)
+
+        clear_btn = tk.Button(frame, text="Clear Grid", command=self.clear_grid)
+        clear_btn.grid(row=0, column=2, padx=10)
+
+        self.backtrack_label = tk.Label(frame, text="Backtracks: 0")
+        self.backtrack_label.grid(row=0, column=3, padx=10)
