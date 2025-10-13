@@ -119,7 +119,7 @@ class SudokuApp:
         solve_button = tk.Button(self.root, text="Solve Puzzle", command=self.solve_puzzle)
         solve_button.grid(row=10, column=3, columnspan=3, padx=10)
 
-        clear_button = tk.Button(self.root, text="Clear Puzzle", command=print("Clear Puzzle"))
+        clear_button = tk.Button(self.root, text="Clear Puzzle", command=self.clear_puzzle)
         clear_button.grid(row=10, column=6, columnspan=3, padx=10)
 
         self.backtrack_label = tk.Label(self.root, text="Backtracking Steps: 0")
@@ -158,7 +158,12 @@ class SudokuApp:
             messagebox.showinfo("Solved", f"Puzzle solved in {end_time:.4f} seconds with {self.solver.backTrackCount} backtracks.")
         else:
             messagebox.showinfo("Unsolvable", "The puzzle cannot be solved.")
-    
+            
+    def clear_puzzle(self):
+        self.solver.board = [[0 for _ in range(9)] for _ in range(9)]
+        self.solver.backTrackCount = 0
+        self.update_grid()
+        self.backtrack_label.config(text=f"Backtracking Steps: {self.solver.backTrackCount}")
     
         
         
