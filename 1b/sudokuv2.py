@@ -21,3 +21,8 @@ class SudokuApp:
                 pady = 0 if i % 3 != 2 else 4
                 grid_entry.grid(row = i, column = j, padx=padx, pady=pady)
                 self.cells[i][j] = grid_entry
+
+
+root = tk.Tk()
+app = SudokuApp(root)
+root.mainloop()
