@@ -52,14 +52,18 @@ class SudokuFunctions:
             for j in range(start_col, start_col + 3):
                 if self.board[i][j] == num and (i, j) != (row, col):
                     return False
+        return True
     
     def validate_init_board(self):
         for i in range(9):
             for j in range(9):
                 val = self.board[i][j]
                 if val != 0:
+                    self.board[i][j] = 0
                     if not self.check_valid(val, i, j):
+                        self.board[i][j] = val
                         return False
+                    self.board[i][j] = val
         return True
     
     def find_next_empty_space(self):
@@ -118,9 +122,9 @@ class SudokuApp:
         clear_button = tk.Button(self.root, text="Clear Puzzle", command=print("Clear Puzzle"))
         clear_button.grid(row=10, column=6, columnspan=3, padx=10)
 
-        backtrack_label = tk.Label(self.root, text="Backtracking Steps: 0")
-        backtrack_label.grid(row=11, column=6, columnspan=3, padx=10)
-    
+        self.backtrack_label = tk.Label(self.root, text="Backtracking Steps: 0")
+        self.backtrack_label.grid(row=11, column=6, columnspan=3, padx=10)
+
     def update_grid(self):
         for i in range(9):
             for j in range(9):
@@ -154,7 +158,8 @@ class SudokuApp:
             messagebox.showinfo("Solved", f"Puzzle solved in {end_time:.4f} seconds with {self.solver.backTrackCount} backtracks.")
         else:
             messagebox.showinfo("Unsolvable", "The puzzle cannot be solved.")
-        
+    
+    
         
         
 
