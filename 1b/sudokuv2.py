@@ -109,10 +109,10 @@ class SudokuApp:
                 self.cells[i][j] = grid_entry
     
     def create_buttons(self):
-        load_button = tk.Button(self.root, text="Load Puzzle", command=print("Load Puzzle"))
+        load_button = tk.Button(self.root, text="Load Puzzle", command=self.load_puzzle)
         load_button.grid(row=10, column=0, columnspan=3,padx=10)
 
-        solve_button = tk.Button(self.root, text="Solve Puzzle", command=print("Solve Puzzle"))
+        solve_button = tk.Button(self.root, text="Solve Puzzle", command=self.solve_puzzle)
         solve_button.grid(row=10, column=3, columnspan=3, padx=10)
 
         clear_button = tk.Button(self.root, text="Clear Puzzle", command=print("Clear Puzzle"))
@@ -131,12 +131,30 @@ class SudokuApp:
                 if val != 0:
                     entry.insert(0, str(val))
                 entry.config(state='readonly')
-                
+
     def load_puzzle(self):
         file_path = filedialog.askopenfilename(filetypes=[("CSV files", "*.csv")])
         if not file_path:
             return
         self.solver.read_file(file_path)
+        self.update_grid()
+        self.backtrack_label.config(text=f"Backtracking Steps: {self.solver.backTrackCount}")
+    
+    def solve_puzzle(self):
+        self.solver.backTrackCount = 0
+        start_time = time.time()
+        if not self.solver.validate_init_board():
+            messagebox.showerror("Error", "The initial board is invalid!")
+            return
+        solved_puzzle = self.solver.solve_sudoku()
+        end_time = time.time()-start_time
+        self.update_grid()
+        self.backtrack_label.config(text=f"Backtracking Steps: {self.solver.backTrackCount}")
+        if solved_puzzle:
+            messagebox.showinfo("Solved", f"Puzzle solved in {end_time:.4f} seconds with {self.solver.backTrackCount} backtracks.")
+        else:
+            messagebox.showinfo("Unsolvable", "The puzzle cannot be solved.")
+        
         
         
 
