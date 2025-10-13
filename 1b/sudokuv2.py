@@ -9,6 +9,58 @@ class SudokuFunctions:
         self.column = 9
         self.board = [[0 for _ in range(self.column)] for _ in range(self.row)]
         self.backTrackCount = 0 # global variable to count the number of backtracks
+    
+    def readFile(self, filename):
+        i = j = 0
+        with open(filename, newline='') as file:
+            reader = csv.reader(file)
+            for line in reader:
+                for value in line:
+                    self.board[i][j] = int(value)
+                    j = j + 1
+                    if j == 9:
+                        j = 0
+                        i = i + 1
+                        if i == 9:
+                            return
+    
+    def print_board(self):
+        for i in range(self.row):
+            for j in range(self.column):
+                if j == 2 or j == 5:
+                    # end is used to ensure it doesnt take a new line after printing the value
+                    # ensures correct format
+                    print(str(self.board[i][j]) + " | ", end='')
+                else:
+                    print(str(self.board[i][j]) + " ", end='')
+            if i == 2 or i == 5:
+            # take a new line or add a divider based on current row
+                print("\n---------------------")
+            else:
+                print("")
+    
+    def check_valid(self, num, row, col):
+        for i in range(9):
+            if self.board[row][i] == num and col != i:
+                return False
+            if self.board[i][col] == num and row != i:
+                return False
+        
+        start_row = (row // 3) * 3
+        start_col = (col // 3) * 3
+        for i in range(start_row, start_row + 3):
+            for j in range(start_col, start_col + 3):
+                if self.board[i][j] == num and (i, j) != (row, col):
+                    return False
+    
+    def validate_init_board(self):
+        for i in range(9):
+            for j in range(9):
+                val = self.board[i][j]
+                if val != 0:
+                    if not self.check_valid(val, i, j):
+                        return False
+        return True
 
 
 class SudokuApp:
