@@ -10,7 +10,7 @@ class SudokuFunctions:
         self.board = [[0 for _ in range(self.column)] for _ in range(self.row)]
         self.backTrackCount = 0 # global variable to count the number of backtracks
     
-    def readFile(self, filename):
+    def read_file(self, filename):
         i = j = 0
         with open(filename, newline='') as file:
             reader = csv.reader(file)
@@ -61,14 +61,40 @@ class SudokuFunctions:
                     if not self.check_valid(val, i, j):
                         return False
         return True
+    
+    def find_next_empty_space(self):
+        for i in range(9):
+            for j in range(9):
+                if self.board[i][j] == 0:
+                    return (i, j)  # row, column
+        return None
+
+    def solve_sudoku(self):
+        find_space = self.find_next_empty_space()
+        if not find_space:
+            return True
+        else:
+            row, col = find_space
+        
+        for num in range(1, 10):
+            if self.check_valid(num, row, col):
+                self.board[row][col] = num
+                
+                if self.solve_sudoku():
+                    return True
+                
+                self.board[row][col] = 0
+                self.backTrackCount += 1
+
 
 
 class SudokuApp:
     def __init__(self, root):
         self.root = root
         self.root.title("Sudoku Solver (GUI)")
-        global board
         self.cells = [[None] * 9 for _ in range(9)]
+
+        self.solver = SudokuFunctions() # calls the functions class - Encapsulation
 
         self.create_grid()
         self.create_buttons()
@@ -95,11 +121,24 @@ class SudokuApp:
         backtrack_label = tk.Label(self.root, text="Backtracking Steps: 0")
         backtrack_label.grid(row=11, column=6, columnspan=3, padx=10)
     
+    def update_grid(self):
+        for i in range(9):
+            for j in range(9):
+                entry = self.cells[i][j]
+                entry.config(state='normal')
+                entry.delete(0, tk.END)
+                val = self.solver.board[i][j]
+                if val != 0:
+                    entry.insert(0, str(val))
+                entry.config(state='readonly')
+                
     def load_puzzle(self):
         file_path = filedialog.askopenfilename(filetypes=[("CSV files", "*.csv")])
         if not file_path:
             return
-        readFile(board)
+        self.solver.read_file(file_path)
+        
+        
 
 
 root = tk.Tk()
