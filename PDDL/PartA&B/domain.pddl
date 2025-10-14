@@ -13,13 +13,12 @@
 
     ; )
     (:types
-        location
-        scan picture - data
-        sample rover device - object
+    item
+    sample lander rover - item
+    data
+    scan pic - data
+    location
     )
-
-    ; samples are data are seperate
-
 
     ; -------------------------------
     ; Predicates
@@ -32,56 +31,52 @@
     ;     (one_arity_predicate ?p - parameter_type)
     ; )
 
-    (:predicates
+    (:predicates 
 
-        ; either true or false
-        ; facts about the world
+    ; an item is at a location
+    (at ?i - item ?l1 - location)
 
-        ; an is at a certain location
-        (isAt ?robject ?location)
-        
-        ; 2 locations are connected
-        (isConnected ?location1 ?location2)
+    ; 2 locations are connected
+    (connected ?l1 - location ?l2 - location)
 
-        ; it doesnt like negative preconditions so i had to define "negative" ones
+    ; a rover has been deployed from its lander
+    (deployed ?r - rover ?l - lander)
 
-        ; a rover contains data
-        (hasData ?rover ?data)
+    ; a rover has not been deployed by its lander
+    (notDeployed ?r - rover ?l - lander)
 
-        ; a rover does not contain data
-        (noData ?rover ?data)
+    ; a lander has landed at location l1
+    (landed ?l ?l1)
 
-        ; a rover has a sample
-        (hasSample ?rover ?sample)
+    ; a rover has a sample s
+    (hasSample ?r ?s)
 
-        ; a rover is currently not holding a sample
-        (noSample ?rover)
+    ; a rover does not have a sample
+    (noSample ?r)
 
-        ; the lander has stored a sample from the rover
-        (hasStored ?lander ?data)
+    (dropped ?l ?s)
 
-        ; the rover are lander are currently linked
-        (isLinked ?rover ?lander)
+    ; a rover has data
+    (hasData ?r ?d)
+    
+    ; a rover has no data
+    (noData ?r)
 
-        ; the rover has been deployed from the lander
-        (isDeployed ?rover ?lander)
+    ; a rover has uploaded data
+    (uploaded ?l ?d)
 
+    ; data type to be collected a location1
+    (dataAt ?d ?l1)
 
-
+    
 
     )
+
+
 
     ; -------------------------------
     ; Actions
     ; -------------------------------
-
-    ; rover actions
-
-    ; lander actions
-    ; land? may be a 
-    ; deploy rover
-    ; store rover
-    ; send data
 
     ; EXAMPLE
 
@@ -97,50 +92,50 @@
     ;     )
     ; )
 
-    ;(:action action_name
-    ;    :parameters ()
-    ;    :precondition (and)
-    ;    :effect (and) ; pick up data
-    ;)
-
-    ;rover actions
-    ; its rovering
-
     (:action action_name
         :parameters ()
         :precondition (and)
-        :effect (and) 
-    )
-    
-
-    ; drive around
-    (:action moveRover
-        :parameters (?rover ?lander ?startLoc ?endLoc)
-        :precondition (and (isAt ?rover ?startLoc) (isConnected ?startLoc ?endLoc) (isDeployed ?rover ?lander))
-        :effect (and (not (isAt ?rover ?startLoc)) (isAt ?rover ?endLoc))
+        :effect (and)
     )
 
-    ; pickup sample
-    (:action pickupSample
-        :parameters (?rover ?lander ?sample ?loc)
-        :precondition (and (isAt ?rover ?loc) (isAt ?sample ?loc) (isDeployed ?rover ?lander) (noSample ?rover))
-        :effect (and (hasSample ?rover ?sample) (not (isAt ?sample ?loc)) (not (noSample ?rover)) )
+     (:action moveRover
+        :parameters (?r - rover ?l - lander ?l1 - location ?l2 - location)
+        :precondition (and (at ?r ?l1) (connected ?l1 ?l2) (deployed ?r ?l))
+        :effect (and (not (at ?r ?l1)) (at ?r ?l2))
     )
 
-    ; get a bit of data, which will be a scan or picture
+        ; pickup sample
+    (:action pickup
+        :parameters (?r - rover ?l - lander ?s - sample ?l1 - location)
+        :precondition (and (at ?r ?l1) (at ?s ?l1) (deployed ?r ?l) (noSample ?r))
+        :effect (and (hasSample ?r ?s) (not (at ?s ?l1)) (not (noSample ?r)))
+    )
+
+    ; FIX THIS PART AS IT DOES NOT WORK
+     (:action drop
+        :parameters (?r - rover ?l - lander ?s - sample ?l1 - location)
+        :precondition (and (at ?r ?l1) (at ?s ?l1) (deployed ?r ?l) (hasSample ?r ?s))
+        :effect (and  (not (dropped ?l ?s) (noSample ?r))
+    )
+
+
+    ; deploy a rover at a location
+    (:action deployRover
+        :parameters (?l - lander ?l1 - location ?r - rover)
+        :precondition (and (notDeployed ?r ?l) (landed ?l ?l1))
+        :effect (and (at ?r ?l1) (deployed ?r ?l) (noData ?r) (noSample ?r) (not (notDeployed ?r ?l)))
+    )
+
     (:action getData
-        :parameters (?rover ?lander ?loc ?data)
-        :precondition (and (isAt ?rover ?loc) (isDeployed ?rover ?lander) (noData ?rover ?data) )
-        :effect (and (hasData ?rover ?data) (not (noData ?rover ?data)) ) 
+        :parameters (?r - rover ?l - lander ?d - data ?l1 - location)
+        :precondition (and (at ?r ?l1) (dataAt ?d ?l1) (deployed ?r ?l) (noData ?r))
+        :effect (and (hasData ?r ?d) (not (dataAt ?d ?l1)) (not (noData ?r)))
     )
 
-    ; send some data back to the lander
-     (:action sendData
-        :parameters (?rover ?lander ?data)
-        :precondition (and (isDeployed ?rover ?lander) (hasData ?rover ?data) (isLinked ?rover ?lander))
-        :effect (and (hasStored ?lander ?data) (not(hasData ?rover ?data)) (noData ?rover ?data) ) 
+    (:action sendData
+        :parameters (?r - rover ?l - lander ?d - data)
+        :precondition (and (deployed ?r ?l) (hasData ?r ?d))
+        :effect (and (uploaded ?l ?d)  (noData ?r) )
     )
-    
-
 
 )
