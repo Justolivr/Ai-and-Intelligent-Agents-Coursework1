@@ -3,6 +3,8 @@ import tkinter as tk
 from tkinter import messagebox, filedialog # for file dialog and message boxes.
 import time
 
+# i've encapsulated all the sudoku functions into a class to make it neater and easier to manage
+# this also allows us to create multiple instances of the sudoku solver if needed
 class SudokuFunctions:
     def __init__(self):
         # define board dimensions and initialising the board
@@ -58,33 +60,54 @@ class SudokuFunctions:
                 print("")
     
     def check_valid(self, num, row, col):
+        ''' 
+        function to check if a number can be placed in a specific position
+        checks the row, column and 3x3 grid to ensure no duplicates
+
+        '''
         for i in range(9):
-            if self.board[row][i] == num and col != i:
+            # if a number is also found in the same row or column, return false
+            if self.board[row][i] == num and col != i: 
                 return False
             if self.board[i][col] == num and row != i:
                 return False
-        
+        # defines the starting row and column of the 3x3 grid
         start_row = (row // 3) * 3
         start_col = (col // 3) * 3
+        # for each value in the 3x3 grid, if a number is found, return false
+        # this is so we are able to follow the rule of sudoku that states no duplicates in a 3x3 grid
         for i in range(start_row, start_row + 3):
             for j in range(start_col, start_col + 3):
+                #  instruction to make sure we don't compare the cell to itself
                 if self.board[i][j] == num and (i, j) != (row, col):
                     return False
         return True
     
     def validate_init_board(self):
+        '''
+        function to validate the initial board, so that we don't waste time trying to solve an invalid puzzle
+        we loop through each value of the board
+        if the value is not 0 (not empty), we check if its valid in that position
+        if any value is found to be invalid, return false (meaning puzzle is invalid)
+        '''
         for i in range(9):
             for j in range(9):
-                val = self.board[i][j]
-                if val != 0:
-                    self.board[i][j] = 0
-                    if not self.check_valid(val, i, j):
-                        self.board[i][j] = val
-                        return False
-                    self.board[i][j] = val
+                val = self.board[i][j] # gets the value at the current position
+                if val != 0: # if the value is not 0 (not empty)
+                    self.board[i][j] = 0 # temporarily set it to 0 to avoid self-comparison in check_valid
+                    if not self.check_valid(val, i, j):  # check if the value is valid in that position
+                        self.board[i][j] = val # restore the value
+                        return False # if not valid, return false
+                    self.board[i][j] = val # restore the value
         return True
     
     def find_next_empty_space(self):
+        '''
+        function to find the next empty space (0) in the board
+        loops through each value of the board
+        if a 0 is found, return the position (row, column)
+        if no empty space is found, return None (means board is full)
+        '''
         for i in range(9):
             for j in range(9):
                 if self.board[i][j] == 0:
@@ -92,24 +115,40 @@ class SudokuFunctions:
         return None
 
     def solve_sudoku(self):
-        find_space = self.find_next_empty_space()
+        '''
+        function to solve the entire puzzle using backtracking
+        define a variable to find the next empty space
+        if no empty space is found, return true (means puzzle is solved)
+        else, get the row and column of the empty space
+        then, loop through numbers 1-9
+        if the number is valid in that position, place it there
+        then, recursively call the function to try and solve the rest of the puzzle
+        if the recursive call returns true, return true (means puzzle is solved)
+        if the recursive call returns false, reset the position to 0 (backtrack) and increment backtrack counter
+        if no number is valid in that position, return false (means puzzle is unsolvable)
+        '''
+        find_space = self.find_next_empty_space() # find the next empty space
         if not find_space:
             return True
         else:
-            row, col = find_space
+            row, col = find_space # get the row and column of the empty space
         
-        for num in range(1, 10):
-            if self.check_valid(num, row, col):
-                self.board[row][col] = num
+        for num in range(1, 10): # loop through numbers 1-9
+            if self.check_valid(num, row, col): # if the number is valid in that position
+                self.board[row][col] = num # place the number there
                 
-                if self.solve_sudoku():
+                if self.solve_sudoku(): # recursively call the function to try and solve the rest of the puzzle
                     return True
                 
-                self.board[row][col] = 0
-                self.backTrackCount += 1
+                self.board[row][col] = 0 # if not, reset the position to 0 (backtrack)
+                self.backTrackCount += 1 # increment backtrack counter
+        return False # if no number is valid in that position, return false (means puzzle is unsolvable)
 
 
-
+# my other class to handle the GUI part of the program (this is to separate the logic from the interface
+# this was optional on the spec, but I wanted to do it this way to make it neater and easier to manage
+# however, it does mean I have changed some functions in sudokuFunctions to be object-oriented
+# for example, I have changed the function signatures to use self and access class variables
 class SudokuApp:
     def __init__(self, root):
         self.root = root
@@ -185,7 +224,8 @@ class SudokuApp:
     
         
         
-
+# main part of the program to run the GUI
+# setting recursion limit higher to avoid hitting the limit on complex puzzles
 import sys
 sys.setrecursionlimit(10000)
 root = tk.Tk()
