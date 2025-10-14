@@ -5,12 +5,25 @@ import time
 
 class SudokuFunctions:
     def __init__(self):
+        # define board dimensions and initialising the board
         self.row = 9
         self.column = 9
         self.board = [[0 for _ in range(self.column)] for _ in range(self.row)]
         self.backTrackCount = 0 # global variable to count the number of backtracks
     
     def read_file(self, filename):
+        '''
+        open csv file to read
+        populate each value of the csv into the correct position
+        data is stored as a flat row of numbers, seperated by commas
+        assuming the csv has no empty numbers, and all the values are of correct type
+        loop over each row of file
+        once a values read, increment a counter by 1
+        when 9 values are read, a row is done reading
+        go to the next column
+        stop reading when 9 rows are read
+
+        '''
         i = j = 0
         with open(filename, newline='') as file:
             reader = csv.reader(file)
@@ -25,11 +38,16 @@ class SudokuFunctions:
                             return
     
     def print_board(self):
+        '''
+        loops through each value of the board
+        if j is at the 2nd or 5th index, print a divider after printing the column to ensure the correct format
+        if i is at the 2nd or 5th index, print a divider after printing the row to ensure the correct format
+        makes the output better resemble an actual board 
+        '''
         for i in range(self.row):
             for j in range(self.column):
                 if j == 2 or j == 5:
-                    # end is used to ensure it doesnt take a new line after printing the value
-                    # ensures correct format
+                    # end is used to ensure it doesnt take a new line after printing the column
                     print(str(self.board[i][j]) + " | ", end='')
                 else:
                     print(str(self.board[i][j]) + " ", end='')
@@ -168,7 +186,9 @@ class SudokuApp:
         
         
 
-
+import sys
+sys.setrecursionlimit(10000)
 root = tk.Tk()
 app = SudokuApp(root)
 root.mainloop()
+
