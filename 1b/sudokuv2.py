@@ -179,6 +179,11 @@ class SudokuApp:
                 self.cells[i][j] = grid_entry # store the entry widget in the cells list
     
     def create_buttons(self):
+        '''
+        function to create the buttons for loading, solving and clearing the puzzle
+        also creates a label to display the number of backtracking steps taken
+        uses the grid layout to position the buttons and label
+        '''
         load_button = tk.Button(self.root, text="Load Puzzle", command=self.load_puzzle)
         load_button.grid(row=10, column=0, columnspan=3,padx=10)
 
@@ -192,32 +197,58 @@ class SudokuApp:
         self.backtrack_label.grid(row=11, column=6, columnspan=3, padx=10)
 
     def update_grid(self):
+        '''
+        function to update the grid of entry widgets with the current state of the board
+        we loop through each entry widget
+        set the state to normal to allow editing
+        then, we clear the entry widget
+        if the corresponding value in the board is not 0, we insert the value into the entry widget
+        finally, we set the state back to readonly to prevent user input 
+        '''
         for i in range(9):
             for j in range(9):
-                entry = self.cells[i][j]
-                entry.config(state='normal')
-                entry.delete(0, tk.END)
-                val = self.solver.board[i][j]
-                if val != 0:
+                entry = self.cells[i][j] # get the entry widget
+                entry.config(state='normal') # set the state to normal to allow editing
+                entry.delete(0, tk.END) # clear the entry widget
+                val = self.solver.board[i][j] # get the corresponding value in the board
+                if val != 0: # if the value is not 0, insert it into the entry widget
                     entry.insert(0, str(val))
-                entry.config(state='readonly')
+                entry.config(state='readonly') # set state back to readonly
 
     def load_puzzle(self):
-        file_path = filedialog.askopenfilename(filetypes=[("CSV files", "*.csv")])
-        if not file_path:
+        '''
+        function to load a puzzle from a csv file
+        opens a file dialog to select the csv file
+        if no file is selected, return
+        else, read the file using the read_file function from the SudokuFunctions class
+        then, update the grid to display the loaded puzzle
+        finally, update the backtrack label to show 0 backtracks (since we just loaded a new puzzle)
+        '''
+        file_path = filedialog.askopenfilename(filetypes=[("CSV files", "*.csv")]) # open file dialog to select csv file
+        if not file_path: 
             return
-        self.solver.read_file(file_path)
-        self.update_grid()
+        self.solver.read_file(file_path) # read the file and populate the board
+        self.update_grid() # update the grid to display the loaded puzzle
         self.backtrack_label.config(text=f"Backtracking Steps: {self.solver.backTrackCount}")
     
     def solve_puzzle(self):
-        self.solver.backTrackCount = 0
-        start_time = time.time()
+        '''
+        function to solve the puzzle using the solve_sudoku function from the SudokuFunctions class
+        first, we reset the backtrack counter to 0
+        then, we validate the initial board to ensure it is solvable
+        after that, we call the solve_sudoku function to attempt to solve the puzzle
+        we also measure the time taken to solve the puzzle
+        once the puzzle is solved (or determined to be unsolvable), we update the grid to display the result
+        finally, we update the backtrack label to show the number of backtracking steps taken
+        and display a message box to inform the user of the result
+        '''
+        self.solver.backTrackCount = 0 # reset backtrack counter
+        start_time = time.time() # start timer
         if not self.solver.validate_init_board():
             messagebox.showerror("Error", "The initial board is invalid!")
             return
         solved_puzzle = self.solver.solve_sudoku()
-        end_time = time.time()-start_time
+        end_time = time.time() - start_time # end timer
         self.update_grid()
         self.backtrack_label.config(text=f"Backtracking Steps: {self.solver.backTrackCount}")
         if solved_puzzle:
@@ -225,7 +256,12 @@ class SudokuApp:
         else:
             messagebox.showinfo("Unsolvable", "The puzzle cannot be solved.")
             
-    def clear_puzzle(self):
+    def clear_puzzle(self): 
+        '''
+        function to clear the puzzle and reset the board
+        just resets the board to all 0s
+        then updates the grid to display the cleared puzzle
+        '''
         self.solver.board = [[0 for _ in range(9)] for _ in range(9)]
         self.solver.backTrackCount = 0
         self.update_grid()
@@ -237,7 +273,7 @@ class SudokuApp:
 # setting recursion limit higher to avoid hitting the limit on complex puzzles
 import sys
 sys.setrecursionlimit(10000)
-root = tk.Tk()
-app = SudokuApp(root)
-root.mainloop()
+root = tk.Tk() # creates the main window
+app = SudokuApp(root) # creates an instance of the SudokuApp class
+root.mainloop() # starts the main event loop to run the application
 
