@@ -137,6 +137,7 @@ class SudokuFunctions:
             if self.check_valid(num, row, col): # if the number is valid in that position
                 self.board[row][col] = num # place the number there
                 
+
                 if self.solve_sudoku(): # recursively call the function to try and solve the rest of the puzzle
                     return True
                 
@@ -151,23 +152,31 @@ class SudokuFunctions:
 # for example, I have changed the function signatures to use self and access class variables
 class SudokuApp:
     def __init__(self, root):
-        self.root = root
+        # setting up the main window
+        self.root = root 
         self.root.title("Sudoku Solver (GUI)")
-        self.cells = [[None] * 9 for _ in range(9)]
+        self.cells = [[None] * 9 for _ in range(9)] # 2d list to store the entry widgets
 
         self.solver = SudokuFunctions() # calls the functions class - Encapsulation
 
-        self.create_grid()
-        self.create_buttons()
+        self.create_grid() # create the grid of entry widgets
+        self.create_buttons() # create the buttons for loading, solving and clearing the puzzle
 
     def create_grid(self):
+        '''
+        function to create the 9x9 grid of entry widgets
+        uses a nested loop to create each entry widget
+        adds padding to the entry widgets to create the 3x3 grid effect
+        sets the entry widgets to readonly to prevent user input
+        stores each entry widget in the cells 2d list for easy access later
+        '''
         for i in range(9):
             for j in range(9):
                 grid_entry = tk.Entry(self.root, width=2, font=('Arial', 24), justify='center', state='readonly')
-                padx = 0 if j % 3 != 2 else 4
-                pady = 0 if i % 3 != 2 else 4
-                grid_entry.grid(row = i, column = j, padx=padx, pady=pady)
-                self.cells[i][j] = grid_entry
+                padx = 0 if j % 3 != 2 else 4 # add extra padding every 3 columns
+                pady = 0 if i % 3 != 2 else 4 # add extra padding every 3 rows
+                grid_entry.grid(row = i, column = j, padx=padx, pady=pady) 
+                self.cells[i][j] = grid_entry # store the entry widget in the cells list
     
     def create_buttons(self):
         load_button = tk.Button(self.root, text="Load Puzzle", command=self.load_puzzle)
