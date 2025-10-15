@@ -17,9 +17,8 @@
     (connected wp4 wp3)
     (connected wp5 wp1)
 
-    
     (notDeployed rover1 lander1)
-    (landed lander1 wp1) 
+    (at lander1 wp1) 
 
     (at sample1 wp1)
 
@@ -33,10 +32,9 @@
         (and
         (uploaded lander1 pic1)
         (uploaded lander1 scan1)
-
-        ; TODO fix the drop action
-        ;(dropped lander1 sample1)
+        (dropped lander1 sample1)
         
+       
         )
     )
 )
