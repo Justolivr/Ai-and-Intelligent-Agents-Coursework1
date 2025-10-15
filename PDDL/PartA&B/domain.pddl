@@ -69,6 +69,7 @@
 
     (notLanded ?l - lander)
 
+    (linked ?l - lander ?r - rover)
     )
 
 
@@ -100,21 +101,21 @@
     ; move
      (:action move
         :parameters (?r - rover ?l - lander ?l1 - location ?l2 - location)
-        :precondition (and (at ?r ?l1) (connected ?l1 ?l2) (deployed ?r ?l))
+        :precondition (and (at ?r ?l1) (connected ?l1 ?l2) (deployed ?r ?l)(linked ?l ?r))
         :effect (and (not (at ?r ?l1)) (at ?r ?l2))
     )
 
     ; pickup sample
     (:action pickup
         :parameters (?r - rover ?l - lander ?s - sample ?l1 - location)
-        :precondition (and (at ?r ?l1) (at ?s ?l1) (deployed ?r ?l) (noSample ?r))
+        :precondition (and (at ?r ?l1) (at ?s ?l1) (deployed ?r ?l) (noSample ?r) (linked ?l ?r))
         :effect (and (hasSample ?r ?s) (not (at ?s ?l1)) (not (noSample ?r)))
     )
 
     ; this bit no worky
      (:action drop
         :parameters (?r - rover ?l - lander ?s - sample ?l1 - location)
-        :precondition (and (at ?r ?l1) (landed ?l ?l1) (deployed ?r ?l) (hasSample ?r ?s))
+        :precondition (and (at ?r ?l1) (landed ?l ?l1) (deployed ?r ?l) (hasSample ?r ?s) (linked ?l ?r))
         :effect (and  (dropped ?l ?s) (noSample ?r))
     )
 
@@ -123,25 +124,25 @@
     ; deploy a rover at a location
     (:action deployRover
         :parameters (?l - lander ?l1 - location ?r - rover)
-        :precondition (and (notDeployed ?r ?l) (at ?l ?l1))
+        :precondition (and (notDeployed ?r ?l) (at ?l ?l1)(linked ?l ?r))
         :effect (and (at ?r ?l1) (deployed ?r ?l) (noData ?r) (noSample ?r) (not (notDeployed ?r ?l)))
     )
 
     (:action getData
         :parameters (?r - rover ?l - lander ?d - data ?l1 - location)
-        :precondition (and (at ?r ?l1) (dataAt ?d ?l1) (deployed ?r ?l) (noData ?r))
+        :precondition (and (at ?r ?l1) (dataAt ?d ?l1) (deployed ?r ?l) (noData ?r)(linked ?l ?r))
         :effect (and (hasData ?r ?d) (not (dataAt ?d ?l1)) (not (noData ?r)))
     )
 
     (:action sendData
         :parameters (?r - rover ?l - lander ?d - data)
-        :precondition (and (deployed ?r ?l) (hasData ?r ?d))
+        :precondition (and (deployed ?r ?l) (hasData ?r ?d)(linked ?l ?r))
         :effect (and (uploaded ?l ?d)  (noData ?r) )
     )
 
     (:action land
         :parameters (?l - lander ?r - rover ?l1 - location)
-        :precondition (and (notLanded ?l) )
+        :precondition (and (notLanded ?l) (linked ?l ?r))
         :effect (and (not (notLanded ?l)) (landed ?l ?l1) (at ?l ?l1) (notDeployed ?r ?l) )
     )
 
