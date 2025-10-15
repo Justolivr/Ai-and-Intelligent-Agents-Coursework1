@@ -1,14 +1,33 @@
-1a) Sudoku defined as a constraint satisfaction problem
+Part 1A - Sudoku as a Constraint Satisfaction problem
 
-Variables:
-Finding the correct integer for a 9x9 grid of cells in Sudoku
-This can be divided into a 3x3 grid of 3x3 "subgrids"
+Sudoku is a logic-based number-placement puzzle that also can be defined as a Constraint Satisfaction Problem (CSP.)
 
-Domains:
-A cell may be occupied by an integer ranging from 1-9
+A CSP contains 3 components; A set of Variables; the corresponding Domains to the Variables; and a set of Constraints that must be satisfied.
 
-Constraints:
-Each row of the 9x9 grid must use numbers 1-9 exactly once
-Each column of the 9x9 must use numbers 1-9 exactly once
-In the "subgrid" 3x3 grids, each number from 1-9 must be used exactly once
-A cell can only have exactly one value
+1. Variables
+    In Sudoku, the variables correspond to the cells in the 9x9 grid. In this case, we have 81 possible variables.
+    Each variable represents a cell at position (i,j) where i and j range from 1-9
+
+2. Domain
+    Each cell has a domain of possible values {1...9}
+    If a cell already contains a number in the initial puzzle, then the domain of that variable is restricted to that single value.
+
+3. Constraints
+    Sudoku follows 3 types of constraints:
+    - Row Constraint; No two cells in the same row can contain the same number.
+    - Column Constraint; No two cells in the same column can contain the same number.
+    - Subgrid Constraint; No two cells in the same 3x3 subgrid can contain the same number.
+
+In formal terms, for any 2 cells (i,j) and (p,q), if (i = x) or (p = q) or (⌊(i−1)/3⌋ = ⌊(p−1)/3⌋ and ⌊(j−1)/3⌋ = ⌊(q−1)/3⌋),
+thenn their assigned values MUST be different. Therefore, val(i,j) ≠ val(p,q). 
+Note that the symbol (⌊) is the floor function, which rounds down to the nearest integer.
+
+A brute force solver tries all possible combinations of numbers in empty cells until it finds the correct one. 
+Our worst-case time complexity if O(9^N), where N is the number of empty cells. Because the O complexity is exponential, 
+this means for complex puzzles, it is computationally infeasible to solve.
+
+On the other hand, the backtracking algorithm is a preferred way of searching. It incrementally assigns values to 
+cells while checking if the value satisfies the constraints. If it doesn't satisfy the constraints, then it backtracks 
+and tries another value. Its O complexity is still O(9^N), like brute force. However, in an average case it is much faster,
+because we prune large portions of the search (meaning we don't have to visit these paths) early via the constraint checking.
+This method is preferred when making logical puzzles like this one.
