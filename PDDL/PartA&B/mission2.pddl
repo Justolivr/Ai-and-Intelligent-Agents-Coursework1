@@ -47,12 +47,12 @@
 
     (:goal
         (and
-        (or (uploaded lander2 pic1) (uploaded lander1 pic1))
-        (or (uploaded lander2 scan1) (uploaded lander1 scan1))
-        (or (uploaded lander2 pic2) (uploaded lander1 pic2))
-        (or (uploaded lander2 scan2) (uploaded lander1 scan2))
-        (or (dropped lander2 sample1) (dropped lander1 sample1))
-        (or (dropped lander2 sample2) (dropped lander1 sample2))
+        (uploaded pic1) 
+        (uploaded scan1)
+        (uploaded pic2) 
+        (uploaded scan2) 
+        (dropped sample1) 
+        (dropped sample2) 
         )
     )
 )

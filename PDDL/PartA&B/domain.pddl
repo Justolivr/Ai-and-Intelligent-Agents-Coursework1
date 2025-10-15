@@ -51,7 +51,7 @@
     ; a rover does not have a sample
     (noSample ?r - rover)
 
-    (dropped ?l - lander ?s - sample)
+    (dropped ?s - sample)
 
     ; a rover has data
     (hasData ?r - rover ?d - data)
@@ -60,15 +60,18 @@
     (noData ?r - rover)
 
     ; a rover has uploaded data
-    (uploaded ?l - lander ?d - data)
+    (uploaded ?d - data)
 
     ; data type to be collected a location1
     (dataAt ?d - data ?l1 - location)
 
+    ; a lander and its location
     (landed ?l - lander ?l1 - location)
-
+    
+    ; a lander has not landed
     (notLanded ?l - lander)
 
+    ; a rovers link to its lander
     (linked ?l - lander ?r - rover)
     )
 
@@ -116,7 +119,7 @@
      (:action drop
         :parameters (?r - rover ?l - lander ?s - sample ?l1 - location)
         :precondition (and (at ?r ?l1) (landed ?l ?l1) (deployed ?r ?l) (hasSample ?r ?s) (linked ?l ?r))
-        :effect (and  (dropped ?l ?s) (noSample ?r))
+        :effect (and  (dropped ?s) (noSample ?r))
     )
 
 
@@ -137,7 +140,7 @@
     (:action sendData
         :parameters (?r - rover ?l - lander ?d - data)
         :precondition (and (deployed ?r ?l) (hasData ?r ?d)(linked ?l ?r))
-        :effect (and (uploaded ?l ?d)  (noData ?r) )
+        :effect (and (uploaded ?d)  (noData ?r) )
     )
 
     (:action land

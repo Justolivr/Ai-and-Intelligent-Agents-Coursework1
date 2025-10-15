@@ -31,9 +31,9 @@
 
     (:goal
         (and
-        (uploaded lander1 pic1)
-        (uploaded lander1 scan1)
-        (dropped lander1 sample1)
+        (uploaded pic1)
+        (uploaded scan1)
+        (dropped sample1)
         
        
         )
