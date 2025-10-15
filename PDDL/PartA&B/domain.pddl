@@ -130,7 +130,7 @@
 
     (:action getData
         :parameters (?r - rover ?l - lander ?d - data ?l1 - location)
-        :precondition (and (at ?r ?l1) (dataAt ?d ?l1) (deployed ?r ?l) (noData ?r)(linked ?l ?r))
+        :precondition (and (at ?r ?l1) (dataAt ?d ?l1) (deployed ?r ?l) (noData ?r) (linked ?l ?r))
         :effect (and (hasData ?r ?d) (not (dataAt ?d ?l1)) (not (noData ?r)))
     )
 

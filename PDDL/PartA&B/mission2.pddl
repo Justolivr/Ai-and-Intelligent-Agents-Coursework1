@@ -25,18 +25,34 @@
     (linked lander2 rover2)
 
     (deployed rover1 lander1)
+    (noData rover1)
+    (noSample rover1)
     (at rover1 wp2)
     (at lander1 wp2)
 
+
+
     (notLanded lander2)
+
+    (dataAt pic1 wp3)
+    (dataAt scan1 wp4)
+    (dataAt pic2 wp2)
+    (dataAt scan2 wp6)
+
+    (at sample1 wp5)
+    (at sample2 wp1)
 
 
     )
 
     (:goal
         (and
-            (at rover1 wp6)
-            (at rover2 wp6)
+        (or (uploaded lander2 pic1) (uploaded lander1 pic1))
+        (or (uploaded lander2 scan1) (uploaded lander1 scan1))
+        (or (uploaded lander2 pic2) (uploaded lander1 pic2))
+        (or (uploaded lander2 scan2) (uploaded lander1 scan2))
+        (or (dropped lander2 sample1) (dropped lander1 sample1))
+        (or (dropped lander2 sample2) (dropped lander1 sample2))
         )
     )
 )
