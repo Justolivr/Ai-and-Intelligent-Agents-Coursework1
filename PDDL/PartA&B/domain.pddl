@@ -46,26 +46,28 @@
     (notDeployed ?r - rover ?l - lander)
 
     ; a rover has a sample s
-    (hasSample ?r ?s)
+    (hasSample ?r - rover ?s - sample)
 
     ; a rover does not have a sample
-    (noSample ?r)
+    (noSample ?r - rover)
 
-    (dropped ?l ?s)
+    (dropped ?l - lander ?s - sample)
 
     ; a rover has data
-    (hasData ?r ?d)
+    (hasData ?r - rover ?d - data)
     
     ; a rover has no data
-    (noData ?r)
+    (noData ?r - rover)
 
     ; a rover has uploaded data
-    (uploaded ?l ?d)
+    (uploaded ?l - lander ?d - data)
 
     ; data type to be collected a location1
-    (dataAt ?d ?l1)
+    (dataAt ?d - data ?l1 - location)
 
-    
+    (landed ?l - lander ?l1 - location)
+
+    (notLanded ?l - lander)
 
     )
 
@@ -112,9 +114,10 @@
     ; this bit no worky
      (:action drop
         :parameters (?r - rover ?l - lander ?s - sample ?l1 - location)
-        :precondition (and (at ?r ?l1) (at ?l ?l1) (deployed ?r ?l) (hasSample ?r ?s))
+        :precondition (and (at ?r ?l1) (landed ?l ?l1) (deployed ?r ?l) (hasSample ?r ?s))
         :effect (and  (dropped ?l ?s) (noSample ?r))
     )
+
 
 
     ; deploy a rover at a location
@@ -134,6 +137,12 @@
         :parameters (?r - rover ?l - lander ?d - data)
         :precondition (and (deployed ?r ?l) (hasData ?r ?d))
         :effect (and (uploaded ?l ?d)  (noData ?r) )
+    )
+
+    (:action land
+        :parameters (?l - lander ?r - rover ?l1 - location)
+        :precondition (and (notLanded ?l) )
+        :effect (and (not (notLanded ?l)) (landed ?l ?l1) (at ?l ?l1) (notDeployed ?r ?l) )
     )
 
 )

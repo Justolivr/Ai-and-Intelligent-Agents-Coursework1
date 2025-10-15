@@ -17,8 +17,7 @@
     (connected wp4 wp3)
     (connected wp5 wp1)
 
-    (notDeployed rover1 lander1)
-    (at lander1 wp1) 
+   (notLanded lander1)
 
     (at sample1 wp1)
 
