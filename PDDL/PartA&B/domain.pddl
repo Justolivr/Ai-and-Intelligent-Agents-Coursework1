@@ -5,13 +5,10 @@
     ; Types
     ; -------------------------------
 
-    ; EXAMPLE
-
-    ; (:types
-    ;     parent_type
-    ;     child_type - parent_type
-
-    ; )
+    ; setting up types
+    ; items represent "physical" objects
+    ; data represents "digital" objects
+    ; location is a location
     (:types
     item
     sample lander rover - item
@@ -24,12 +21,7 @@
     ; Predicates
     ; -------------------------------
 
-    ; EXAMPLE
-
-    ; (:predicates
-    ;     (no_arity_predicate)
-    ;     (one_arity_predicate ?p - parameter_type)
-    ; )
+    ; represent facts that are true or false about the world
 
     (:predicates 
 
@@ -51,6 +43,7 @@
     ; a rover does not have a sample
     (noSample ?r - rover)
 
+    ; a sample has been delivered to a lander
     (dropped ?s - sample)
 
     ; a rover has data
@@ -75,54 +68,39 @@
     (linked ?l - lander ?r - rover)
     )
 
-
-
     ; -------------------------------
     ; Actions
     ; -------------------------------
 
-    ; EXAMPLE
+    ; move a rover from location 1 to location 2
+    ; requires the 2 locations to be connected, rover must already be deployed and linked to lander
 
-    ; (:action action-template
-    ;     :parameters (?p - parameter_type)
-    ;     :precondition (and
-    ;         (one_arity_predicate ?p)
-    ;     )
-    ;     :effect 
-    ;     (and 
-    ;         (no_arity_predicate)
-    ;         (not (one_arity_predicate ?p))
-    ;     )
-    ; )
+    ; "the rover knows where it is at all times"
 
-    (:action action_name
-        :parameters ()
-        :precondition (and)
-        :effect (and)
-    )
+    ; moves the rover from a location where it is, to a location where it isnt, 
+    ; and arriving at a location where it wasnt, it now is.
+    ; Consequently, the location where it is, is now the location that it wasn't,
+    ; and it follows that the location where it was, is now the location that it isn't
 
-    ; move
      (:action move
         :parameters (?r - rover ?l - lander ?l1 - location ?l2 - location)
         :precondition (and (at ?r ?l1) (connected ?l1 ?l2) (deployed ?r ?l)(linked ?l ?r))
         :effect (and (not (at ?r ?l1)) (at ?r ?l2))
     )
 
-    ; pickup sample
+    ; pickup samples
     (:action pickup
         :parameters (?r - rover ?l - lander ?s - sample ?l1 - location)
         :precondition (and (at ?r ?l1) (at ?s ?l1) (deployed ?r ?l) (noSample ?r) (linked ?l ?r))
         :effect (and (hasSample ?r ?s) (not (at ?s ?l1)) (not (noSample ?r)))
     )
 
-    ; this bit no worky
+    ; drop off a collected sample at its own lander
      (:action drop
         :parameters (?r - rover ?l - lander ?s - sample ?l1 - location)
         :precondition (and (at ?r ?l1) (landed ?l ?l1) (deployed ?r ?l) (hasSample ?r ?s) (linked ?l ?r))
-        :effect (and  (dropped ?s) (noSample ?r))
+        :effect (and (dropped ?s) (noSample ?r))
     )
-
-
 
     ; deploy a rover at a location
     (:action deployRover
@@ -131,18 +109,21 @@
         :effect (and (at ?r ?l1) (deployed ?r ?l) (noData ?r) (noSample ?r) (not (notDeployed ?r ?l)))
     )
 
+    ; take a picture, or scan, depending on what is needed
     (:action getData
         :parameters (?r - rover ?l - lander ?d - data ?l1 - location)
         :precondition (and (at ?r ?l1) (dataAt ?d ?l1) (deployed ?r ?l) (noData ?r) (linked ?l ?r))
         :effect (and (hasData ?r ?d) (not (dataAt ?d ?l1)) (not (noData ?r)))
     )
 
+    ; send some data back to the lander
     (:action sendData
         :parameters (?r - rover ?l - lander ?d - data)
         :precondition (and (deployed ?r ?l) (hasData ?r ?d)(linked ?l ?r))
         :effect (and (uploaded ?d)  (noData ?r) )
     )
 
+    ; land a lander at a location
     (:action land
         :parameters (?l - lander ?r - rover ?l1 - location)
         :precondition (and (notLanded ?l) (linked ?l ?r))
