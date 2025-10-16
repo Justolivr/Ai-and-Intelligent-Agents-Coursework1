@@ -1,6 +1,7 @@
 (define (problem lunar-mission-2)
     (:domain lunar)
 
+   ; setup data 
     (:objects
     wp1 wp2 wp3 wp4 wp5 wp6 - location
     sample1 sample2 - sample
@@ -21,6 +22,7 @@
     (connected wp5 wp6)
     (connected wp6 wp4)
 
+    ; lander and rover setup
     (linked lander1 rover1)
     (linked lander2 rover2)
 
@@ -30,15 +32,13 @@
     (at rover1 wp2)
     (at lander1 wp2)
 
-
-
     (notLanded lander2)
 
+    ; data and sample setup
     (dataAt pic1 wp3)
     (dataAt scan1 wp4)
     (dataAt pic2 wp2)
     (dataAt scan2 wp6)
-
     (at sample1 wp5)
     (at sample2 wp1)
 
@@ -47,6 +47,7 @@
 
     (:goal
         (and
+        ; mission goals
         (uploaded pic1) 
         (uploaded scan1)
         (uploaded pic2) 
