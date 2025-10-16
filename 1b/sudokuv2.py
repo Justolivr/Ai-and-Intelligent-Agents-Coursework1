@@ -185,16 +185,16 @@ class SudokuApp:
         uses the grid layout to position the buttons and label
         '''
         load_button = tk.Button(self.root, text="Load Puzzle", command=self.load_puzzle)
-        load_button.grid(row=10, column=0, columnspan=3,padx=10)
+        load_button.grid(row=10, column=0, columnspan=3,padx=10, pady=10)
 
         solve_button = tk.Button(self.root, text="Solve Puzzle", command=self.solve_puzzle)
-        solve_button.grid(row=10, column=3, columnspan=3, padx=10)
+        solve_button.grid(row=10, column=3, columnspan=3, padx=10, pady=10)
 
         clear_button = tk.Button(self.root, text="Clear Puzzle", command=self.clear_puzzle)
-        clear_button.grid(row=10, column=6, columnspan=3, padx=10)
+        clear_button.grid(row=10, column=6, columnspan=3, padx=10, pady=10)
 
         self.backtrack_label = tk.Label(self.root, text="Backtracking Steps: 0")
-        self.backtrack_label.grid(row=11, column=6, columnspan=3, padx=10)
+        self.backtrack_label.grid(row=11, column=6, columnspan=3, padx=10, pady=10)
 
     def update_grid(self):
         '''
@@ -227,7 +227,11 @@ class SudokuApp:
         file_path = filedialog.askopenfilename(filetypes=[("CSV files", "*.csv")]) # open file dialog to select csv file
         if not file_path: 
             return
+        print("Loading puzzle from:", file_path)
         self.solver.read_file(file_path) # read the file and populate the board
+        print("Puzzle loaded:") 
+        self.solver.print_board()
+        print("---------------------\n") # print a divider for clarity in the console
         self.update_grid() # update the grid to display the loaded puzzle
         self.backtrack_label.config(text=f"Backtracking Steps: {self.solver.backTrackCount}")
     
@@ -244,16 +248,28 @@ class SudokuApp:
         '''
         self.solver.backTrackCount = 0 # reset backtrack counter
         start_time = time.time() # start timer
+        print("Validating initial board...") # print message to console
         if not self.solver.validate_init_board():
             messagebox.showerror("Error", "The initial board is invalid!")
+            print("Initial board is invalid!\n")
             return
-        solved_puzzle = self.solver.solve_sudoku()
+        
+        print("Initial board is valid. Solving puzzle...")
+
+        solved_puzzle = self.solver.solve_sudoku() # call to solve the puzzle
         end_time = time.time() - start_time # end timer
-        self.update_grid()
+        self.update_grid() # update the grid to display the result
         self.backtrack_label.config(text=f"Backtracking Steps: {self.solver.backTrackCount}")
         if solved_puzzle:
-            messagebox.showinfo("Solved", f"Puzzle solved in {end_time:.4f} seconds with {self.solver.backTrackCount} backtracks.")
+            print("Puzzle solved!")
+            print("Solved in %.4f seconds with %d backtracks." % (end_time, self.solver.backTrackCount))
+            print("---------------------\n")
+            print("Solved board:")
+            self.solver.print_board()
+            messagebox.showinfo("Solved", f"Puzzle solved in {end_time:.4f}s with {self.solver.backTrackCount} backtracks.")
         else:
+            print("Puzzle is unsolvable.")
+            print("f""Attempted for %.4f seconds with %d backtracks." % (end_time, self.solver.backTrackCount))
             messagebox.showinfo("Unsolvable", "The puzzle cannot be solved.")
             
     def clear_puzzle(self): 
@@ -264,7 +280,8 @@ class SudokuApp:
         '''
         self.solver.board = [[0 for _ in range(9)] for _ in range(9)]
         self.solver.backTrackCount = 0
-        self.update_grid()
+        print("Puzzle cleared.\n")
+        self.update_grid() # update the grid to display the cleared puzzle
         self.backtrack_label.config(text=f"Backtracking Steps: {self.solver.backTrackCount}")
     
         
