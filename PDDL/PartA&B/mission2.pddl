@@ -26,7 +26,7 @@
     (linked lander1 rover1)
     (linked lander2 rover2)
 
-    (deployed rover1 lander1)
+    (deployed rover1)
     (noData rover1)
     (noSample rover1)
     (at rover1 wp2)

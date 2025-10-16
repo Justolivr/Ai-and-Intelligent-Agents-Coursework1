@@ -51,7 +51,7 @@
     (astronautLink bob lander2)
 
     ; setup the initial states of the deployed lander1 and rover1 manned by alice
-    (deployed rover1 lander1)
+    (deployed rover1)
     (noData rover1)
     (noSample rover1)
     (at rover1 wp2)
