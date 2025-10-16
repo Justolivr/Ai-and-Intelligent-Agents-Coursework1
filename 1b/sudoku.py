@@ -8,7 +8,7 @@ from datetime import datetime
 backTrackCount = 0 # global variable to count the number of backtracks
 
 # takes in board and filename, so that we can read from different files if needed
-def read_file(board, filename):
+def read_file(board):
 
     # open csv file to read
     # populate each value of the csv into the correct position
@@ -21,7 +21,7 @@ def read_file(board, filename):
     # stop reading when 9 rows are read
 
     i = j = 0
-    with open(filename, newline='') as file:
+    with open("puzzle1.csv", newline='') as file:
         reader = csv.reader(file)
         for line in reader:
             for value in line:
