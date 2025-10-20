@@ -50,7 +50,7 @@
     (astronautLink alice lander1)
     (astronautLink bob lander2)
 
-    ; setup the initial states of the deployed lander1 and rover1 manned by alice
+     ;setup the initial states of the deployed lander1 and rover1 manned by alice
     (deployed rover1)
     (noData rover1)
     (noSample rover1)
@@ -59,6 +59,7 @@
 
     ; rover 2 is manned by bob and initially undeployed
     (notLanded lander2)
+    ;(notLanded lander1)
 
     ; data and sample location setup
     (dataAt pic1 wp3)
@@ -71,6 +72,8 @@
 
     (:goal
         (and
+
+
         ; mission goals
         (uploaded pic1) 
         (uploaded scan1)

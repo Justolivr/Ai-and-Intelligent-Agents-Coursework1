@@ -126,7 +126,7 @@
     ; land a lander at a location
     (:action land
         :parameters (?l - lander ?r - rover ?l1 - location)
-        :precondition (and (notLanded ?l) )
+        :precondition (and (notLanded ?l) (linked ?l ?r))
         :effect (and (not (notLanded ?l)) (landed ?l ?l1) (at ?l ?l1) (notDeployed ?r) )
     )
 

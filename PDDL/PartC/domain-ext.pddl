@@ -95,7 +95,7 @@
     ; deploy a rover at a location
     (:action deployRover
         :parameters (?a - astronaut ?l2 - db ?l - lander ?r - rover ?l1 - location  )
-        :precondition (and (notDeployed ?r ) (at ?l ?l1)(linked ?l ?r) (at ?a ?l2) (astronautLink ?a ?l))
+        :precondition (and (notDeployed ?r ) (landed ?l ?l1)(linked ?l ?r) (at ?a ?l2) (astronautLink ?a ?l))
         :effect (and (at ?r ?l1) (deployed ?r ) (noData ?r) (noSample ?r) (not (notDeployed ?r )) )
     )
 
@@ -113,7 +113,7 @@
 
     (:action land
         :parameters (?l - lander ?r - rover ?l1 - location)
-        :precondition (and (notLanded ?l) )
+        :precondition (and (notLanded ?l) (linked ?l ?r) )
         :effect (and (not (notLanded ?l)) (landed ?l ?l1) (at ?l ?l1) (notDeployed ?r) )
     )
 
