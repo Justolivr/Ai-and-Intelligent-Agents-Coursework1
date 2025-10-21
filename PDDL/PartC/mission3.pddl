@@ -40,7 +40,7 @@
     (connected cr2 db2)
     (connected db2 cr2)
 
-    ; starting points for each astronautto retrieve data from
+    ; starting points for each astronaut t
     (at alice cr1)
     (at bob cr2)
 
@@ -57,9 +57,9 @@
     (at rover1 wp2)
     (at lander1 wp2)
 
-    ; rover 2 is manned by bob and initially undeployed
+    ; lander 2 is manned by bob and initially not landed
     (notLanded lander2)
-    ;(notLanded lander1)
+   
 
     ; data and sample location setup
     (dataAt pic1 wp3)
