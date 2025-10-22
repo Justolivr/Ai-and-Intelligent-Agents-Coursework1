@@ -3,6 +3,7 @@
 
     ; setup data 
     (:objects
+    ; setup locations, and data/items of the world
     wp1 wp2 wp3 wp4 wp5 - location
     sample1 - sample
     pic1 scan1 - data

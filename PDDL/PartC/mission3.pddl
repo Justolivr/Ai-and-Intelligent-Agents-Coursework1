@@ -40,7 +40,7 @@
     (connected cr2 db2)
     (connected db2 cr2)
 
-    ; starting points for each astronautto retrieve data from
+    ; starting points for each astronaut t
     (at alice cr1)
     (at bob cr2)
 
@@ -50,15 +50,16 @@
     (astronautLink alice lander1)
     (astronautLink bob lander2)
 
-    ; setup the initial states of the deployed lander1 and rover1 manned by alice
+     ;setup the initial states of the deployed lander1 and rover1 manned by alice
     (deployed rover1)
     (noData rover1)
     (noSample rover1)
     (at rover1 wp2)
     (at lander1 wp2)
 
-    ; rover 2 is manned by bob and initially undeployed
+    ; lander 2 is manned by bob and initially not landed
     (notLanded lander2)
+   
 
     ; data and sample location setup
     (dataAt pic1 wp3)
@@ -71,6 +72,8 @@
 
     (:goal
         (and
+
+
         ; mission goals
         (uploaded pic1) 
         (uploaded scan1)

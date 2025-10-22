@@ -73,22 +73,13 @@
     ; -------------------------------
 
     ; move a rover from location 1 to location 2
-    ; requires the 2 locations to be connected, rover must already be deployed and linked to lander
-
-    ; "the rover knows where it is at all times"
-
-    ; moves the rover from a location where it is, to a location where it isnt, 
-    ; and arriving at a location where it wasnt, it now is.
-    ; Consequently, the location where it is, is now the location that it wasn't,
-    ; and it follows that the location where it was, is now the location that it isn't
-
      (:action move
         :parameters (?r - rover ?l1 - location ?l2 - location)
         :precondition (and (at ?r ?l1) (connected ?l1 ?l2) (deployed ?r) )
         :effect (and (not (at ?r ?l1)) (at ?r ?l2))
     )
 
-    ; pickup samples
+    ; pickup samples from a location
     (:action pickup
         :parameters (?r - rover ?s - sample ?l1 - location)
         :precondition (and (at ?r ?l1) (at ?s ?l1) (deployed ?r) (noSample ?r) )
@@ -102,10 +93,10 @@
         :effect (and (dropped ?s) (noSample ?r))
     )
 
-    ; deploy a rover at a location
+    ; deploy a rover at the location of the lander
     (:action deployRover
         :parameters (?l - lander ?r - rover ?l1 - location)
-        :precondition (and (notDeployed ?r) (at ?l ?l1)(linked ?l ?r))
+        :precondition (and (notDeployed ?r) (landed ?l ?l1)(linked ?l ?r))
         :effect (and (at ?r ?l1) (deployed ?r) (noData ?r) (noSample ?r) (not (notDeployed ?r)))
     )
 
@@ -126,7 +117,7 @@
     ; land a lander at a location
     (:action land
         :parameters (?l - lander ?r - rover ?l1 - location)
-        :precondition (and (notLanded ?l) )
+        :precondition (and (notLanded ?l) (linked ?l ?r))
         :effect (and (not (notLanded ?l)) (landed ?l ?l1) (at ?l ?l1) (notDeployed ?r) )
     )
 
