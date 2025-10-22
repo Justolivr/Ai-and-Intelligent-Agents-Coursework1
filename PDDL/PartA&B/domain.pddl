@@ -73,14 +73,6 @@
     ; -------------------------------
 
     ; move a rover from location 1 to location 2
-    ; "the rover knows where it is at all times"
-
-    ; moves the rover from a location where it is, to a location where it isnt, 
-    ; and arriving at a location where it wasnt, it now is.
-    ; Consequently, the location where it is, is now the location that it wasn't,
-    ; and it follows that the location where it was, is now the location that it isn't
-
-
      (:action move
         :parameters (?r - rover ?l1 - location ?l2 - location)
         :precondition (and (at ?r ?l1) (connected ?l1 ?l2) (deployed ?r) )
