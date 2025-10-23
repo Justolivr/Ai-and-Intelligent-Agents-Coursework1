@@ -137,12 +137,20 @@ class SudokuFunctions:
             if self.check_valid(num, row, col): # if the number is valid in that position
                 self.board[row][col] = num # place the number there
                 
+                if hasattr(self, 'app_ref'):  # check if a GUI reference exists
+                    self.app_ref.update_grid()
+                    self.app_ref.root.update()
+                    time.sleep(0.01)  # adjust speed here (0.05 = 50ms)
 
                 if self.solve_sudoku(): # recursively call the function to try and solve the rest of the puzzle
                     return True
                 
                 self.board[row][col] = 0 # if not, reset the position to 0 (backtrack)
                 self.backTrackCount += 1 # increment backtrack counter
+                if hasattr(self, 'app_ref'):
+                    self.app_ref.backtrack_label.config(text=f"Backtracking Steps: {self.backTrackCount}")
+                    self.app_ref.root.update()  # refresh GUI
+                    time.sleep(0.01)  # optional small delay to visualise backtracking
         return False # if no number is valid in that position, return false (means puzzle is unsolvable)
 
 
@@ -158,6 +166,7 @@ class SudokuApp:
         self.cells = [[None] * 9 for _ in range(9)] # 2d list to store the entry widgets
 
         self.solver = SudokuFunctions() # calls the functions class - Encapsulation
+        self.solver.app_ref = self
 
         self.create_grid() # create the grid of entry widgets
         self.create_buttons() # create the buttons for loading, solving and clearing the puzzle
@@ -248,6 +257,7 @@ class SudokuApp:
         '''
         self.solver.backTrackCount = 0 # reset backtrack counter
         start_time = time.time() # start timer
+     
         print("Validating initial board...") # print message to console
         if not self.solver.validate_init_board():
             messagebox.showerror("Error", "The initial board is invalid!")
